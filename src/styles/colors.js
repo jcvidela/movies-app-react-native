@@ -6,3 +6,4 @@ export const INPUT_FORM_BORDER_COLOR = '#ccc';
 export const SIGNIN_BUTTON_FONT_COLOR = '#fff';
 export const SIGNIN_BUTTON_BACKGROUND_COLOR = '#00aded';
 export const SIGNIN_BUTTON_BACKGROUND_COLOR_DISABLED = '#ccc';
+export const TITLE_NAVBAR_COLOR = '#fff';
