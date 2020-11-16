@@ -1,64 +1,13 @@
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import React from "react";
+import { Provider } from "react-redux";
+import store from './src/redux/store';
 
-// screens
-import {Auth, AuthLoading, Books, Home, Detail} from './src/screens/index';
+import App from './src/index';
 
-const OnBoardingNavigator = createStackNavigator(
-  {
-    Auth: {
-      screen: Auth,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-  },
-  {
-    initialRouteName: 'Auth',
-  },
-);
-
-const AppNavigator = createStackNavigator(
-  {
-    Home: {
-      screen: Home,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-    Books: {
-      screen: Books,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-    Detail: {
-      screen: Detail,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-  },
-  {
-    initialRouteName: 'Home',
-  },
-);
-
-/**
- * Switch between: 
- * AuthLoading(We determine if there is an active session), 
- * OnBoarding(Login), 
- * Application
- */
-const BaseStack = createSwitchNavigator(
-  {
-    AuthLoading,
-    OnBoarding: OnBoardingNavigator,
-    Root: AppNavigator,
-  },
-  {
-    initialRouteName: 'AuthLoading',
-  },
-);
-
-export default createAppContainer(BaseStack);
+export default () => {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+};

@@ -1,6 +1,6 @@
 export const isEmail = (val) => {
  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
- return reg.test(val);
+ return reg.test(val.toLowerCase());
 };
 
 export const generateToken = () => {

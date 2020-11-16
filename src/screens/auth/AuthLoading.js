@@ -1,29 +1,20 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
+
+import {Loader} from '../../components/index';
 
 export default ({navigation}) => {
   React.useEffect(() => {
     let isMounted = true;
-    AsyncStorage.getItem('token').then(
-      (x) => isMounted && navigation.navigate(x ? 'Root' : 'OnBoarding'),
-    );
+    if (isMounted) {
+      AsyncStorage.getItem('token').then((x) =>
+        navigation.navigate(x ? 'Root' : 'OnBoarding'),
+      );
+    }
 
     // cleanup effect
     return () => (isMounted = false);
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#000" />
-    </View>
-  );
+  return <Loader />;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

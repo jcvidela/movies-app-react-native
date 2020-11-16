@@ -5,41 +5,34 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
 import {isEmail, generateToken} from '../../../utils/helper';
 
 // colors
-import {
-  CONTAINER_BACKGROUND_COLOR,
-  INPUT_FORM_BORDER_COLOR,
-  SIGNIN_BUTTON_BACKGROUND_COLOR,
-} from '../../styles/colors';
+import {colors} from '../../styles/colors';
 
 // libs & deps
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import useForm from '../../hooks/useForm';
+import {connect} from 'react-redux';
+import {login} from '../../redux/reducers/auth/actions';
 
-export default ({navigation}) => {
+const Auth = ({navigation, data, login}) => {
   const [isDisabled, setIsDisabled] = React.useState(true);
   const initialForm = {name: '', surname: '', email: '', age: ''};
 
   const onSubmit = async (val) => {
-    try {
-      // sign in
-      let response = await axios.post(
-        'http://192.168.100.224:3000/sign_in',
-        val,
-      );
+    let token = generateToken();
+    val['token'] = token;
+    login(val);
 
-      // generate and save token
-      AsyncStorage.setItem('token', JSON.stringify(generateToken()))
+      AsyncStorage.setItem('token', JSON.stringify(token))
         .then(() => navigation.navigate('Home'))
-        .catch((err) => alert(err));
-    } catch (error) {
-      return alert('Error as an ocurred.');
-    }
+        .catch((err) => {
+          return alert(err);
+        });
   };
 
   const [suscribe, values, handleSubmit] = useForm(initialForm, onSubmit);
@@ -48,13 +41,9 @@ export default ({navigation}) => {
 
   // validations
   React.useEffect(() => {
-    if (
-      name === '' ||
-      surname === '' ||
-      !isEmail(email) ||
-      age === '' ||
-      !agreeTerms
-    ) {
+    if (name === '' || surname === '' ||
+      !isEmail(email) || age === '' ||
+      !agreeTerms) {
       setIsDisabled(true);
     } else {
       setIsDisabled(false);
@@ -62,98 +51,118 @@ export default ({navigation}) => {
   }, [values, agreeTerms]);
 
   return (
-    <View style={styles.container}>
-      <Text style={{fontSize: 20}}>Sign in as a guest</Text>
-      {/* name */}
-      <TextInput
-        autoCapitalize="none"
-        name="name"
-        value={name}
-        onChangeText={suscribe('name')}
-        autoCompleteType="off"
-        placeholder="Name"
-        style={styles.input}
-      />
-
-      {/* surname */}
-      <TextInput
-        autoCapitalize="none"
-        name="surname"
-        value={surname}
-        onChangeText={suscribe('surname')}
-        autoCompleteType="off"
-        placeholder="Surname"
-        style={styles.input}
-      />
-      {/* email */}
-      <TextInput
-        autoCapitalize="none"
-        name="email"
-        value={email}
-        onChangeText={suscribe('email')}
-        autoCompleteType="off"
-        placeholder="Email"
-        style={styles.input}
-      />
-      {/* edad */}
-      <TextInput
-        keyboardType="numeric"
-        name="age"
-        value={age}
-        onChangeText={suscribe('age')}
-        placeholder="Age"
-        maxLength={3}
-        style={styles.input}
-      />
-
-      <View style={styles.agreeTerms}>
-        <CheckBox
-          disabled={false}
-          name="acceptTerms"
-          onValueChange={suscribe('agreeTerms')}
-          value={agreeTerms}
+    <ImageBackground
+      source={require('../../../assets/general/bc_inicio.png')}
+      style={{width: '100%', height: '100%'}}
+      resizeMode="cover">
+      <View style={styles.container}>
+        {/* name */}
+        <TextInput
+          autoCapitalize="none"
+          name="name"
+          value={name}
+          onChangeText={suscribe('name')}
+          autoCompleteType="off"
+          placeholder="Name"
+          placeholderTextColor={colors.WHITE}
+          style={styles.input}
         />
-        <Text>Agree terms and conditions</Text>
-      </View>
 
-      <View style={styles.containerButton}>
-        <TouchableOpacity
-          style={[styles.sendButton, isDisabled && {backgroundColor: '#ccc'}]}
-          onPress={handleSubmit}
-          disabled={isDisabled}>
-          <Text style={{fontSize: 20, color: '#fff'}}>Sign in</Text>
-        </TouchableOpacity>
+        {/* surname */}
+        <TextInput
+          autoCapitalize="none"
+          name="surname"
+          value={surname}
+          onChangeText={suscribe('surname')}
+          autoCompleteType="off"
+          placeholder="Surname"
+          placeholderTextColor={colors.WHITE}
+          style={styles.input}
+        />
+        {/* email */}
+        <TextInput
+          autoCapitalize="none"
+          name="email"
+          value={email}
+          onChangeText={suscribe('email')}
+          autoCompleteType="off"
+          placeholder="Email"
+          placeholderTextColor={colors.WHITE}
+          style={styles.input}
+        />
+        {/* edad */}
+        <TextInput
+          keyboardType="numeric"
+          name="age"
+          value={age}
+          onChangeText={suscribe('age')}
+          placeholder="Age"
+          placeholderTextColor={colors.WHITE}
+          maxLength={3}
+          style={styles.input}
+        />
+
+        <View style={styles.agreeTerms}>
+          <CheckBox
+            disabled={false}
+            name="acceptTerms"
+            onValueChange={suscribe('agreeTerms')}
+            value={agreeTerms}
+          />
+          <Text style={{color: colors.WHITE}}>Agree terms and conditions</Text>
+        </View>
+
+        <View style={styles.containerButton}>
+          <TouchableOpacity
+            style={[styles.sendButton, isDisabled && {opacity: 0.6}]}
+            onPress={handleSubmit}
+            disabled={isDisabled}>
+            <Text style={{fontSize: 20, color: colors.WHITE}}>Sign in</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
+
+const mapStateToProps = (state) => {
+  return {data: state.auth};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  login: (data) => dispatch(login(data)),
+  // logout: (data) => dispatch(logout(data))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CONTAINER_BACKGROUND_COLOR,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
   input: {
     height: 50,
-    borderColor: INPUT_FORM_BORDER_COLOR,
-    borderWidth: 1,
+    color: colors.WHITE,
     alignSelf: 'stretch',
     margin: 6,
     padding: 10,
     fontSize: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.WHITE,
   },
   containerButton: {
     alignSelf: 'stretch',
   },
   sendButton: {
-    backgroundColor: SIGNIN_BUTTON_BACKGROUND_COLOR,
+    backgroundColor: colors.STRONG_BLUE,
     height: 48,
     margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 30,
   },
   agreeTerms: {
     flexDirection: 'row',

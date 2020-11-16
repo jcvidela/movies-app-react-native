@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 
-import {ACTIVITY_INDICATOR_COLOR} from '../styles/colors';
+import {colors} from '../styles/colors';
 
 export default () => (
   <View style={styles.container}>
-    <ActivityIndicator size="large" color={ACTIVITY_INDICATOR_COLOR} />
+    <ActivityIndicator size="large" color={colors.LIGHTBLUE} />
   </View>
 );
 
