@@ -1,11 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {fetchBooks} from '../redux/reducers/books/actions';
-
+import {View, Text} from 'react-native';
 import {Loader} from '../components/index';
 
 const Home = ({navigation, data, fetchBooks}) => {
   const [list, setList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   // give me those books
   React.useEffect(() => {
@@ -19,6 +20,12 @@ const Home = ({navigation, data, fetchBooks}) => {
   React.useEffect(() => {
     setList([]);
     setList(data);
+
+    setTimeout(() => {
+      if(!list.length > 0) {
+        setIsLoading(false)
+      }
+    }, 4000);
   }, [data])
 
   // There are books? let's sail there
@@ -28,7 +35,16 @@ const Home = ({navigation, data, fetchBooks}) => {
     })();
   }, [list]);
 
-  return <Loader />;
+  return (
+    <>
+      {
+        isLoading ? <Loader /> : 
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{textAlign: 'center'}}>No books avaible</Text>
+        </View>
+      }
+    </>
+  );
 };
 
 const mapStateToProps = (state) => {

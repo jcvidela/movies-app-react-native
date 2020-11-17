@@ -1,10 +1,6 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Wip} from '../components/index';
 
 export default () => {
-  return (
-    <View>
-      <Text>Hola desde Rentals</Text>
-    </View>
-  );
+  return <Wip />;
 };
