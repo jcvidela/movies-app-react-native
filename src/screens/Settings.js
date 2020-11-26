@@ -1,22 +1,28 @@
 import React from 'react';
 import {View, StyleSheet, Button} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {connect} from 'react-redux';
+import {logout} from '../../src/redux/reducers/auth/actions';
 
-export default ({navigation}) => {
-  const logout = () => {
-    AsyncStorage.removeItem('token').then((x) =>
-      navigation.navigate('OnBoarding'),
-    );
-  };
-
+const Settings = ({navigation, logout}) => {
   return (
     <View style={styles.container}>
       <View style={{width: 100}}>
-        <Button title="Log out" onPress={logout} />
+        <Button
+          title="Log out"
+          onPress={() => {
+            logout(), navigation.navigate('OnBoarding');
+          }}
+        />
       </View>
     </View>
   );
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(logout()),
+});
+
+export default connect(null, mapDispatchToProps)(Settings);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,38 +1,31 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import baseURL from '../../../env';
-import {FETCH_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT} from '../../types';
+import {FETCH_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAILURE} from '../../types';
 
-export const loginRequest = () => {
-  return {
-    type: FETCH_REQUEST,
-  };
-};
+const loginRequest = () => ({ type: FETCH_REQUEST });
+const loginSuccess = (data) => ({ type: LOGIN_SUCCESS, payload: data });
+const loginFailure = (error) => ({ type: LOGIN_FAILURE, payload: error });
 
-export const loginSuccess = (data) => {
-  return {
-    type: LOGIN_SUCCESS,
-    payload: data,
-  };
-};
+const logoutRequest = () => ({ type: LOGOUT });
+const logoutSuccess = (data) => ({ type: LOGOUT_SUCCESS, payload: data });
+const logoutFailure = (error) => ({ type: LOGOUT_FAILURE, payload: error });
 
-export const loginFailure = (error) => {
-  return {
-    type: LOGIN_FAILURE,
-    payload: error,
-  };
-};
-
-export const logoutRequest = (data) => {
-  return {
-    type: LOGOUT,
-    payload: data,
-  };
-};
-
-export const login = (data) => (dispatch) => {
+export const login = (data) => async(dispatch) => {
   dispatch(loginRequest());
-  axios
-    .post(`${baseURL}/sign_in`, data)
-    .then((response) => dispatch(loginSuccess(response.data)))
-    .catch((error) => dispatch(loginFailure(error.message)));
+
+  try {
+    let response = await axios.post(`${baseURL}/sign_in`, data);
+    dispatch(loginSuccess(response.data));
+  } catch (error) {
+    dispatch(loginFailure(error.message));
+  }
+};
+
+export const logout = () => (dispatch) => {
+  dispatch(logoutRequest());
+
+  AsyncStorage.removeItem('token')
+  .then(() => dispatch(logoutSuccess({loggued: false})))
+  .catch((error) => dispatch(logoutFailure({loggued: true, error})))
 };

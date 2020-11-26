@@ -7,7 +7,7 @@ export default ({navigation}) => {
   let isMounted = React.useRef(true);
   
   React.useEffect(() => {
-    if (isMounted) {
+    if (isMounted.current) {
       AsyncStorage.getItem('token').then((x) =>
         navigation.navigate(x ? 'Root' : 'OnBoarding'),
       );

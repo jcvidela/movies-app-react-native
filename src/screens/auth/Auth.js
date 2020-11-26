@@ -19,7 +19,7 @@ import useForm from '../../hooks/useForm';
 import {connect} from 'react-redux';
 import {login} from '../../redux/reducers/auth/actions';
 
-const Auth = ({navigation, data, login}) => {
+const Auth = ({navigation, /* data, */ login}) => {
   const [isDisabled, setIsDisabled] = React.useState(true);
   const initialForm = {name: '', surname: '', email: '', age: '', agreeTerms: false};
 
@@ -54,7 +54,6 @@ const Auth = ({navigation, data, login}) => {
       <View style={styles.container}>
         <TextInput
           name="name"
-          autoCapitalize="none"
           value={name}
           onChangeText={suscribe('name')}
           autoCompleteType="off"
@@ -64,7 +63,6 @@ const Auth = ({navigation, data, login}) => {
         />
         <TextInput
           name="surname"
-          autoCapitalize="none"
           value={surname}
           onChangeText={suscribe('surname')}
           autoCompleteType="off"
@@ -77,7 +75,6 @@ const Auth = ({navigation, data, login}) => {
           autoCapitalize="none"
           value={email}
           onChangeText={suscribe('email')}
-          autoCompleteType="off"
           placeholder="Email"
           placeholderTextColor={colors.WHITE}
           style={styles.input}
@@ -92,7 +89,6 @@ const Auth = ({navigation, data, login}) => {
           maxLength={3}
           style={styles.input}
         />
-
         <View style={styles.agreeTerms}>
           <CheckBox
             name="acceptTerms"

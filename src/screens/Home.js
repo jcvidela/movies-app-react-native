@@ -12,7 +12,7 @@ const Home = ({navigation, data, fetchBooks}) => {
 
   // give me those books
   React.useEffect(() => {
-    isMounted && fetchBooks();
+    isMounted.current && fetchBooks();
     return () => isMounted.current = false;
   }, []);
 
