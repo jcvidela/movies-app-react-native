@@ -21,7 +21,7 @@ import {login} from '../../redux/reducers/auth/actions';
 
 const Auth = ({navigation, data, login}) => {
   const [isDisabled, setIsDisabled] = React.useState(true);
-  const initialForm = {name: '', surname: '', email: '', age: ''};
+  const initialForm = {name: '', surname: '', email: '', age: '', agreeTerms: false};
 
   const onSubmit = async (val) => {
     let token = generateToken();
@@ -39,27 +39,22 @@ const Auth = ({navigation, data, login}) => {
 
   const {name, surname, email, age, agreeTerms} = values;
 
-  // validations
+
   React.useEffect(() => {
-    if (name === '' || surname === '' ||
-      !isEmail(email) || age === '' ||
-      !agreeTerms) {
-      setIsDisabled(true);
-    } else {
-      setIsDisabled(false);
-    }
-  }, [values, agreeTerms]);
+    let fields = Object.values(values);
+    setIsDisabled(fields.includes('') || !isEmail(email) || !agreeTerms ? true : false);
+  }, [values, agreeTerms])
 
   return (
     <ImageBackground
       source={require('../../../assets/general/bc_inicio.png')}
       style={{width: '100%', height: '100%'}}
       resizeMode="cover">
+        
       <View style={styles.container}>
-        {/* name */}
         <TextInput
-          autoCapitalize="none"
           name="name"
+          autoCapitalize="none"
           value={name}
           onChangeText={suscribe('name')}
           autoCompleteType="off"
@@ -67,11 +62,9 @@ const Auth = ({navigation, data, login}) => {
           placeholderTextColor={colors.WHITE}
           style={styles.input}
         />
-
-        {/* surname */}
         <TextInput
-          autoCapitalize="none"
           name="surname"
+          autoCapitalize="none"
           value={surname}
           onChangeText={suscribe('surname')}
           autoCompleteType="off"
@@ -79,10 +72,9 @@ const Auth = ({navigation, data, login}) => {
           placeholderTextColor={colors.WHITE}
           style={styles.input}
         />
-        {/* email */}
         <TextInput
-          autoCapitalize="none"
           name="email"
+          autoCapitalize="none"
           value={email}
           onChangeText={suscribe('email')}
           autoCompleteType="off"
@@ -90,13 +82,12 @@ const Auth = ({navigation, data, login}) => {
           placeholderTextColor={colors.WHITE}
           style={styles.input}
         />
-        {/* edad */}
         <TextInput
+          placeholder="Age"
           keyboardType="numeric"
           name="age"
           value={age}
           onChangeText={suscribe('age')}
-          placeholder="Age"
           placeholderTextColor={colors.WHITE}
           maxLength={3}
           style={styles.input}
@@ -104,8 +95,8 @@ const Auth = ({navigation, data, login}) => {
 
         <View style={styles.agreeTerms}>
           <CheckBox
-            disabled={false}
             name="acceptTerms"
+            disabled={false}
             onValueChange={suscribe('agreeTerms')}
             value={agreeTerms}
           />
