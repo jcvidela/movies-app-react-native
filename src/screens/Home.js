@@ -8,12 +8,12 @@ const Home = ({navigation, data, fetchBooks}) => {
   const [list, setList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
+  let isMounted = React.useRef(true);
+
   // give me those books
   React.useEffect(() => {
-    let isMounted = true;
-    
     isMounted && fetchBooks();
-    return () => isMounted = false;
+    return () => isMounted.current = false;
   }, []);
 
   // listen data and update state
