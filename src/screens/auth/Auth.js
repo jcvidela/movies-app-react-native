@@ -25,11 +25,14 @@ const Auth = ({navigation, /* data, */ login}) => {
 
   const onSubmit = async (val) => {
     let token = generateToken();
-    val['token'] = token;
-    login(val);
+    
 
       AsyncStorage.setItem('token', JSON.stringify(token))
-        .then(() => navigation.navigate('Home'))
+        .then(() => {
+        val['token'] = token;
+        login(val);
+        navigation.navigate('Home')
+        })
         .catch((err) => {
           return alert(err);
         });
